@@ -13,9 +13,9 @@ class TestTextNode(unittest.TestCase):
         self.assertNotEqual(node, node2)
 
     def test_repr(self):
-        node = TextNode("This is a text node", TextType.NORMAL)
+        node = TextNode("This is a text node", TextType.TEXT)
         repr = str(node)
-        self.assertEqual(repr, "TextNode(This is a text node, normal, None)")
+        self.assertEqual(repr, "TextNode(This is a text node, text, None)")
 
 
 if __name__ == "__main__":
