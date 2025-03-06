@@ -1,6 +1,6 @@
 import unittest
 
-from utils import text_node_to_html_node, split_nodes_delimiter
+from utils import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextType, TextNode
 
 class TestUtilsTextNodeToHtml(unittest.TestCase):
@@ -38,6 +38,25 @@ class TestUtilsSplitNodesDelimiter(unittest.TestCase):
             TextNode("code", TextType.CODE),
             TextNode(" node 2", TextType.TEXT),
         ])
+
+class TestUtilsExtractMarkdownImages(unittest.TestCase):
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+        matches = extract_markdown_images(
+            "This another text ![image](http://localhost.com) also ![another](http://localhost.dev)"
+        )
+        self.assertEqual([("image", "http://localhost.com"), ("another", "http://localhost.dev")], matches)
+
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "[this is a link](http://localhost.dev)"
+        )
+        self.assertListEqual([("this is a link", "http://localhost.dev")], matches)
+
 
 if __name__ == "__main__":
     unittest.main()
