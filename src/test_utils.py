@@ -1,6 +1,6 @@
 import unittest
 
-from utils import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image
+from utils import text_node_to_html_node, split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
 from textnode import TextType, TextNode
 
 class TestUtilsTextNodeToHtml(unittest.TestCase):
@@ -89,6 +89,23 @@ class TestUtilsSplitNodeImages(unittest.TestCase):
                 TextNode(" something else", TextType.TEXT),
                 TextNode("This is also ", TextType.TEXT),
                 TextNode("another", TextType.IMAGE, "http://localhost"),
+            ],
+            new_nodes,
+        )
+
+class TestUtilsSplitNodeLink(unittest.TestCase):
+    def test_split_node_link(self):
+        node = TextNode(
+            "This is text with a [link](http://localhost) and another [link](http://localhost)",
+            TextType.TEXT
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "http://localhost"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "http://localhost"),
             ],
             new_nodes,
         )
