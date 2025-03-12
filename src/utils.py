@@ -26,15 +26,23 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
 
     raise ValueError('Invalid text_node type')
 
+def make_node_delimiter_processor(old_node: TextNode, new_text_type: TextType) -> Callable[[TextNode], TextNode]:
+    def node_delimiter_processor(element: Tuple[int, str]) -> TextNode:
+        index, text = element
+        # Odd indexes are where the matches for a given text block are
+        text_type = new_text_type if index % 2 != 0 else old_node.text_type
+        return TextNode(text, text_type, old_node.url)
+
+    return node_delimiter_processor
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
         split_nodes = node.text.split(delimiter)
+        node_delimiter_processor = make_node_delimiter_processor(node, text_type)
         nodes_to_add = filter(
             lambda n: len(n.text) > 0,
-            list(
-                map(lambda e: TextNode(e[1], text_type) if e[0] % 2 != 0 else TextNode(e[1], node.text_type, node.url), enumerate(split_nodes))
-            )
+            list(map(node_delimiter_processor, enumerate(split_nodes)))
         )
         new_nodes.extend(nodes_to_add)
 
