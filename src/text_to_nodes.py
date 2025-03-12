@@ -15,11 +15,23 @@ def text_to_nodes(text: str) -> List[TextNode]:
     4. Image
     5. Link
     """
-    nodes = []
+    # Start with a single node
+    nodes = [TextNode(text, TextType.TEXT)]
     initial_node = TextNode(text, TextType.TEXT)
-    with_images = split_nodes_image([initial_node])
-    with_links = split_nodes_link(with_images)
-    with_code = split_nodes_delimiter(with_links, "`", TextType.CODE)
-    with_bold = split_nodes_delimiter(with_code, "**", TextType.BOLD)
-    with_italic = split_nodes_delimiter(with_bold, "_", TextType.ITALIC)
-    return with_italic
+
+    # Define a list of transformation functions
+    transformations = [
+        (split_nodes_image, None, None),
+        (split_nodes_link, None, None),
+        (split_nodes_delimiter, "`", TextType.CODE),
+        (split_nodes_delimiter, "**", TextType.BOLD),
+        (split_nodes_delimiter, "_", TextType.ITALIC),
+    ]
+    # Loop through transformation functions and apply them to the node lists
+    for transform_func, delimiter, text_type in transformations:
+        if delimiter and text_type:
+            nodes = transform_func(nodes, delimiter, text_type)
+        else:
+            nodes = transform_func(nodes)
+
+    return nodes

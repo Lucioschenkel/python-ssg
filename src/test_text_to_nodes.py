@@ -18,5 +18,4 @@ class TestUtilsTextNodeToHtml(unittest.TestCase):
             TextNode("link", TextType.LINK, "https://boot.dev"),
         ]
         result = text_to_nodes(text)
-        print(result)
         self.assertListEqual(expected, result)
