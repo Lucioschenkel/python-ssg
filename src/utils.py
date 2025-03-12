@@ -40,18 +40,15 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for node in old_nodes:
         split_nodes = node.text.split(delimiter)
         node_delimiter_processor = make_node_delimiter_processor(node, text_type)
-        nodes_to_add = filter(
-            lambda n: len(n.text) > 0,
-            list(map(node_delimiter_processor, enumerate(split_nodes)))
-        )
+        nodes_to_add = filter(lambda n: len(n.text) > 0, list(map(node_delimiter_processor, enumerate(split_nodes))))
         new_nodes.extend(nodes_to_add)
 
     return new_nodes
 
-def extract_markdown_images(text):
+def extract_markdown_images(text: str) -> List[Tuple[str, str]]:
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
-def extract_markdown_links(text):
+def extract_markdown_links(text: str) -> List[Tuple[str, str]]:
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
 def split_nodes(nodes: List[TextNode], extract_node_func: Callable[[str], List[Tuple[str, str]]], text_type: TextType) -> List[TextNode]:
@@ -72,9 +69,9 @@ def split_nodes(nodes: List[TextNode], extract_node_func: Callable[[str], List[T
     return new_nodes
 
 
-def split_nodes_image(old_nodes):
+def split_nodes_image(old_nodes: List[TextNode]) -> List[TextNode]:
     return split_nodes(old_nodes, extract_markdown_images, TextType.IMAGE)
 
-def split_nodes_link(old_nodes):
+def split_nodes_link(old_nodes: List[TextNode]) -> List[TextNode]:
     return split_nodes(old_nodes, extract_markdown_links, TextType.LINK)
 
