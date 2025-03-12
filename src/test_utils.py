@@ -81,7 +81,6 @@ class TestUtilsSplitNodeImages(unittest.TestCase):
             TextNode("This is also ![another](http://localhost)", TextType.TEXT)
         ]
         new_nodes = split_nodes_image(old_nodes)
-        print(new_nodes)
         self.assertListEqual(
             [
                 TextNode("This is text with image ", TextType.TEXT),
