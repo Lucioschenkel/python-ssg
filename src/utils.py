@@ -32,7 +32,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         nodes_to_add = filter(
             lambda n: len(n.text) > 0,
             list(
-                map(lambda e: TextNode(e[1], text_type) if e[0] % 2 != 0 else TextNode(e[1], TextType.TEXT), enumerate(split_nodes))
+                map(lambda e: TextNode(e[1], text_type) if e[0] % 2 != 0 else TextNode(e[1], node.text_type, node.url), enumerate(split_nodes))
             )
         )
         new_nodes.extend(nodes_to_add)
@@ -54,10 +54,10 @@ def split_nodes_image(old_nodes):
             alt, url = image
             [text_node_before, *after] = node_text.split(f"![{alt}]({url})")
             node_text = "".join(after)
-            new_nodes.extend([TextNode(text_node_before, TextType.TEXT), TextNode(alt, TextType.IMAGE, url)])
+            new_nodes.extend([TextNode(text_node_before, node.text_type, node.url), TextNode(alt, TextType.IMAGE, url)])
 
         if len(node_text) > 0:
-            new_nodes.append(TextNode(node_text, TextType.TEXT))
+            new_nodes.append(TextNode(node_text, node.text_type, node.url))
 
     return new_nodes
 
@@ -70,9 +70,9 @@ def split_nodes_link(old_nodes):
             alt, url = link
             [text_node_before, *after] = node_text.split(f"[{alt}]({url})")
             node_text = "".join(after)
-            new_nodes.extend([TextNode(text_node_before, TextType.TEXT), TextNode(alt, TextType.LINK, url)])
+            new_nodes.extend([TextNode(text_node_before, node.text_type, node.url), TextNode(alt, TextType.LINK, url)])
 
         if len(node_text) > 0:
-            new_nodes.append(TextNode(node_text, TextType.TEXT))
+            new_nodes.append(TextNode(node_text, node.text_type, node.url))
 
     return new_nodes
