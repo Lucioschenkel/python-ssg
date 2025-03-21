@@ -1,5 +1,5 @@
 from fs import cleanup_directory, copy_recursive, create_directory
-from generate_page import generate_page
+from generate_page import generate_pages_recursive
 
 
 def main():
@@ -13,7 +13,8 @@ def main():
     copy_recursive("static", "public")
 
     # Generate HTML from Markdown
-    generate_page("content/index.md", "template.html", "public/index.html")
+    # generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 
 
 if __name__ == "__main__":

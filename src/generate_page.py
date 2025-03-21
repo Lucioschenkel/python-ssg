@@ -14,8 +14,6 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
         template = template_file.read()
         md = markdown_file.read()
 
-        print(template)
-
         # Generate HTML from markdown
         html_node = markdown_to_html_node(md)
         html = html_node.to_html()
@@ -29,7 +27,7 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
         # Create the destination directory if it doesn't exists
         destination_directory = os.path.dirname(dest_path)
         if not os.path.exists(destination_directory):
-            os.mkdir(destination_directory)
+            os.makedirs(destination_directory)
 
         # Write the rendered output to the destination file
         with open(dest_path, "w", encoding="utf-8") as destination_file:
@@ -43,12 +41,15 @@ def generate_pages_recursive(
 
     for file in files:
         file_path = os.path.join(dir_path_content, file)
+        print(f"iterating: {file_path}")
         if os.path.isfile(file_path):
             full_destination_path = os.path.join(
                 dest_dir_path, file.replace(".md", ".html")
             )
+            print(f"generating: {full_destination_path}")
             generate_page(file_path, template_path, full_destination_path)
         else:
+            print(f"recursing {os.path.join(dest_dir_path, file)}")
             generate_pages_recursive(
                 file_path, template_path, os.path.join(dest_dir_path, file)
             )
