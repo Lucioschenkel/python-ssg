@@ -9,7 +9,11 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
     text = text_node.text.replace("\n", " ")
     match text_node.text_type:
         case TextType.TEXT:
-            return LeafNode(None, text)
+            if not text.startswith("#"):
+                return LeafNode(None, text)
+
+            heading = f"h{text.count('#')}"
+            return LeafNode(heading, re.sub(r"^#+ ", "", text))
         case TextType.BOLD:
             return LeafNode("b", text)
         case TextType.ITALIC:
@@ -26,7 +30,7 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
 
 def make_node_delimiter_processor(
     old_node: TextNode, new_text_type: TextType
-) -> Callable[[TextNode], TextNode]:
+) -> Callable[[Tuple[int, str]], TextNode]:
     def node_delimiter_processor(element: Tuple[int, str]) -> TextNode:
         index, text = element
         # Odd indexes are where the matches for a given text block are
@@ -77,7 +81,7 @@ def split_nodes(
             new_nodes.extend(
                 [
                     TextNode(text_node_before, node.text_type, node.url),
-                    TextNode(alt, TextType.IMAGE, url),
+                    TextNode(alt, text_type, url),
                 ]
             )
 

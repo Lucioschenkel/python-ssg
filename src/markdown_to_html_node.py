@@ -56,7 +56,7 @@ def create_ordered_list_from_md(block: str, tag: str) -> ParentNode:
 
 
 def create_blockquote_from_md(block: str, tag: str) -> ParentNode:
-    quote_text = block.replace("\n", " ").replace("> ", "")
+    quote_text = block.replace("\n", "").replace(">", "").strip(" ")
     print(quote_text)
     quote_nodes = []
     text_nodes = text_to_nodes(quote_text)
